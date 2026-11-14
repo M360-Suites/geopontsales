@@ -1,0 +1,337 @@
+---
+/**
+ * Custom select (ARIA "select-only combobox" pattern).
+ * Renders a button + listbox and mirrors the value into a hidden input,
+ * so it submits and validates like a native <select>.
+ */
+interface Option {
+  value: string;
+  label: string;
+}
+interface Props {
+  name: string;
+  label: string;
+  options: Option[];
+  placeholder?: string;
+  required?: boolean;
+}
+
+const { name, label, options, placeholder = 'Select an option', required = false } = Astro.props;
+const id = `sel-${name}`;
+---
+
+<lead-select class="select" data-name={name}>
+  <span class="select__label" id={`${id}-label`}>
+    {label}{required && <span class="select__req" aria-hidden="true"> *</span>}
+  </span>
+
+  <button
+    type="button"
+    class="select__trigger"
+    id={`${id}-trigger`}
+    role="combobox"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-controls={`${id}-list`}
+    aria-labelledby={`${id}-label ${id}-trigger`}
+    aria-required={required ? 'true' : undefined}
+    data-placeholder={placeholder}
+  >
+    <span class="select__value is-placeholder">{placeholder}</span>
+    <svg class="select__chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+      <path d="M1 1.5 6 6.5l5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+      ></path>
+    </svg>
+  </button>
+
+  <ul class="select__list" id={`${id}-list`} role="listbox" aria-labelledby={`${id}-label`} tabindex="-1" hidden>
+    {
+      options.map((o, i) => (
+        <li class="select__option" id={`${id}-opt-${i}`} role="option" aria-selected="false" data-value={o.value}>
+          <span>{o.label}</span>
+          <svg class="select__check" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="m2.5 7.5 3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- Real form value. Kept focusable-free but present for submission and validation. -->
+  <input class="select__input" type="text" name={name} required={required} tabindex="-1" aria-hidden="true" />
+  <p class="select__error" role="alert" hidden>Please choose an option.</p>
+</lead-select>
+
+<script>
+  class LeadSelect extends HTMLElement {
+    trigger!: HTMLButtonElement;
+    list!: HTMLUListElement;
+    input!: HTMLInputElement;
+    valueEl!: HTMLSpanElement;
+    error!: HTMLParagraphElement;
+    options!: HTMLLIElement[];
+    active = -1;
+    typed = '';
+    typedTimer = 0;
+
+    connectedCallback() {
+      this.trigger = this.querySelector('.select__trigger')!;
+      this.list = this.querySelector('.select__list')!;
+      this.input = this.querySelector('.select__input')!;
+      this.valueEl = this.querySelector('.select__value')!;
+      this.error = this.querySelector('.select__error')!;
+      this.options = [...this.querySelectorAll<HTMLLIElement>('.select__option')];
+
+      this.trigger.addEventListener('click', () => (this.isOpen ? this.close() : this.open()));
+      this.trigger.addEventListener('keydown', (e) => this.onKey(e));
+      this.trigger.addEventListener('blur', (e) => {
+        // Keep open while the pointer is interacting with the list.
+        if (!this.contains(e.relatedTarget as Node)) this.close();
+      });
+
+      this.options.forEach((opt, i) => {
+        // mousedown keeps focus on the trigger so blur doesn't close first
+        opt.addEventListener('mousedown', (e) => e.preventDefault());
+        opt.addEventListener('click', () => {
+          this.choose(i);
+          this.close();
+          this.trigger.focus();
+        });
+        opt.addEventListener('mousemove', () => this.setActive(i, false));
+      });
+
+      // Surface the native "required" check on the hidden input as our own error state.
+      this.input.addEventListener('invalid', (e) => {
+        e.preventDefault();
+        this.showError(true);
+      });
+
+      this.closest('form')?.addEventListener('reset', () => this.clear());
+    }
+
+    get isOpen() {
+      return this.trigger.getAttribute('aria-expanded') === 'true';
+    }
+
+    open() {
+      if (this.isOpen) return;
+      this.list.hidden = false;
+      this.trigger.setAttribute('aria-expanded', 'true');
+      this.classList.add('is-open');
+      this.placeList();
+      const selected = this.options.findIndex((o) => o.getAttribute('aria-selected') === 'true');
+      this.setActive(selected >= 0 ? selected : 0);
+    }
+
+    close() {
+      if (!this.isOpen) return;
+      this.list.hidden = true;
+      this.trigger.setAttribute('aria-expanded', 'false');
+      this.trigger.removeAttribute('aria-activedescendant');
+      this.classList.remove('is-open', 'is-up');
+    }
+
+    /** Open upward when there isn't room below inside the scrolling container. */
+    placeList() {
+      this.classList.remove('is-up');
+      const scroller = this.closest('[data-scroll]') ?? document.documentElement;
+      const bounds = scroller.getBoundingClientRect();
+      const bottom = Math.min(bounds.bottom, window.innerHeight);
+      const top = Math.max(bounds.top, 0);
+      const t = this.trigger.getBoundingClientRect();
+      const need = this.list.offsetHeight + 8;
+      if (bottom - t.bottom < need && t.top - top > bottom - t.bottom) this.classList.add('is-up');
+    }
+
+    setActive(i: number, scroll = true) {
+      this.options.forEach((o) => o.classList.remove('is-active'));
+      this.active = Math.max(0, Math.min(i, this.options.length - 1));
+      const opt = this.options[this.active];
+      opt.classList.add('is-active');
+      this.trigger.setAttribute('aria-activedescendant', opt.id);
+      if (scroll) opt.scrollIntoView({ block: 'nearest' });
+    }
+
+    choose(i: number) {
+      const opt = this.options[i];
+      this.options.forEach((o) => o.setAttribute('aria-selected', String(o === opt)));
+      this.input.value = opt.dataset.value ?? '';
+      this.valueEl.textContent = opt.textContent?.trim() ?? '';
+      this.valueEl.classList.remove('is-placeholder');
+      this.classList.add('has-value');
+      this.showError(false);
+      this.input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    clear() {
+      this.options.forEach((o) => o.setAttribute('aria-selected', 'false'));
+      this.input.value = '';
+      this.valueEl.textContent = this.trigger.dataset.placeholder ?? '';
+      this.valueEl.classList.add('is-placeholder');
+      this.classList.remove('has-value');
+      this.showError(false);
+    }
+
+    showError(on: boolean) {
+      this.error.hidden = !on;
+      this.classList.toggle('is-invalid', on);
+      if (on) this.trigger.setAttribute('aria-invalid', 'true');
+      else this.trigger.removeAttribute('aria-invalid');
+    }
+
+    onKey(e: KeyboardEvent) {
+      const last = this.options.length - 1;
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          if (!this.isOpen) this.open();
+          else this.setActive(this.active + 1);
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          if (!this.isOpen) this.open();
+          else this.setActive(this.active - 1);
+          break;
+        case 'Home':
+          if (this.isOpen) { e.preventDefault(); this.setActive(0); }
+          break;
+        case 'End':
+          if (this.isOpen) { e.preventDefault(); this.setActive(last); }
+          break;
+        case 'Enter':
+        case ' ':
+          e.preventDefault();
+          if (this.isOpen) { this.choose(this.active); this.close(); }
+          else this.open();
+          break;
+        case 'Escape':
+          if (this.isOpen) { e.preventDefault(); e.stopPropagation(); this.close(); }
+          break;
+        case 'Tab':
+          if (this.isOpen) { this.choose(this.active); this.close(); }
+          break;
+        default:
+          // Type-ahead: jump to the first option starting with the typed letters.
+          if (e.key.length === 1 && /\S/.test(e.key)) {
+            this.typed += e.key.toLowerCase();
+            clearTimeout(this.typedTimer);
+            this.typedTimer = window.setTimeout(() => (this.typed = ''), 600);
+            const hit = this.options.findIndex((o) => o.textContent!.trim().toLowerCase().startsWith(this.typed));
+            if (hit >= 0) {
+              if (!this.isOpen) this.open();
+              this.setActive(hit);
+            }
+          }
+      }
+    }
+  }
+
+  if (!customElements.get('lead-select')) customElements.define('lead-select', LeadSelect);
+</script>
+
+<style>
+  .select {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .select__label {
+    font: 600 12px/16px var(--sans);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .select__req { color: var(--gold); }
+
+  .select__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: 1px solid #2e353d;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 15px/22px var(--sans);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .select__trigger:hover { border-color: #504535; }
+  .select__trigger:focus-visible,
+  .is-open .select__trigger {
+    outline: none;
+    border-color: var(--gold-btn);
+    box-shadow: 0 0 0 3px rgba(229, 169, 60, 0.18);
+  }
+  .is-invalid .select__trigger { border-color: #e5484d; }
+  .select__value.is-placeholder { color: #7d8794; }
+  .select__chevron {
+    flex: none;
+    color: var(--gold);
+    transition: transform 0.2s ease;
+  }
+  .is-open .select__chevron { transform: rotate(180deg); }
+
+  .select__list {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    max-height: 240px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    border: 1px solid #2e353d;
+    border-radius: 8px;
+    background: var(--surface-2);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  }
+  /* The error line sits below the trigger; anchor the list to the trigger instead. */
+  .select:has(.select__error:not([hidden])) .select__list { top: calc(100% - 18px); }
+  .is-up .select__list {
+    top: auto;
+    bottom: calc(100% - 24px);
+  }
+  .select__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font: 400 15px/20px var(--sans);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .select__option.is-active { background: var(--surface-3); }
+  .select__option[aria-selected='true'] { color: var(--gold); font-weight: 600; }
+  .select__check { flex: none; opacity: 0; color: var(--gold); }
+  .select__option[aria-selected='true'] .select__check { opacity: 1; }
+
+  .select__input {
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .select__error {
+    margin: 0;
+    font: 500 12px/16px var(--sans);
+    color: #ff8a8d;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .select__chevron,
+    .select__trigger { transition: none; }
+  }
+</style>

@@ -1,0 +1,456 @@
+---
+/**
+ * Lead capture modal. Any element with [data-lead] opens it.
+ *
+ * Submissions are sent to CRM360 by capture.js, which listens for the submit
+ * event on #contact-form. We only let that event fire once every field is
+ * valid, so the CRM never receives partial leads. If capture.js fails to load
+ * (e.g. blocked by an ad blocker), we fall back to a pre-filled email.
+ */
+import Select from './Select.astro';
+
+const crmKey = 'pk_live_b69c3b95057dc135dbdc1138a37657d346db6cf746748177';
+const fallbackEmail = 'invest@capitalheights-geopoints.ng';
+
+// The CRM stores option values as-is, so values are the human-readable labels.
+const opts = (...labels: string[]) => labels.map((label) => ({ value: label, label }));
+const reasons = opts('For investment (resell)', 'For investment (rent)', 'Personal house to live in');
+const yesNo = opts('Yes', 'No');
+const timing = opts('Immediately', 'Next 3 days', 'Next 5 days', 'After Friday, 20th November 2026');
+const payment = opts('Full payment', 'Installment payment');
+---
+
+<script
+  is:inline
+  defer
+  src="https://app.crm360online.com/capture.js"
+  data-key={crmKey}
+  data-selector="#contact-form"
+  data-tags=""
+  data-debug="false"
+  onerror="window.__crmCaptureFailed = true"></script>
+
+<dialog class="lead" id="lead-dialog" aria-labelledby="lead-title" data-email={fallbackEmail}>
+  <div class="lead__panel">
+    <header class="lead__head">
+      <div>
+        <p class="eyebrow">Capital Heights · Sangotedo</p>
+        <h2 class="lead__title" id="lead-title">Secure your interest</h2>
+        <p class="lead__sub">Tell us a little about you and an advisor will reach out about the ₦7M opportunity.</p>
+      </div>
+      <button type="button" class="lead__close" data-close aria-label="Close form">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 1l12 12M13 1 1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <form class="lead__form" id="contact-form" novalidate data-scroll>
+      <input type="hidden" name="cta" />
+
+      <div class="grid">
+        <label class="field field--full">
+          <span class="field__label">Full name<span class="req" aria-hidden="true"> *</span></span>
+          <input class="field__input" type="text" name="name" autocomplete="name" required minlength="2" />
+          <span class="field__error" hidden>Please enter your name.</span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Phone number<span class="req" aria-hidden="true"> *</span></span>
+          <input
+            class="field__input"
+            type="tel"
+            name="phone"
+            autocomplete="tel"
+            inputmode="tel"
+            placeholder="+234 800 000 0000"
+            required
+            pattern="^\+?[0-9\s\-()]{7,20}$"
+          />
+          <span class="field__error" hidden>Please enter a valid phone number.</span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Email address<span class="req" aria-hidden="true"> *</span></span>
+          <input class="field__input" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+          <span class="field__error" hidden>Please enter a valid email address.</span>
+        </label>
+
+        <div class="field--full">
+          <Select name="reason" label="Why are you buying?" options={reasons} required />
+        </div>
+
+        <div class="field--full">
+          <Select
+            name="has_7m"
+            label="Do you have ₦7M before the price increase on Friday, 20th November 2026?"
+            options={yesNo}
+            required
+          />
+        </div>
+
+        <div class="field--full">
+          <Select name="timing" label="How soon do you want to commit?" options={timing} required />
+        </div>
+
+        <Select name="payment" label="Payment format" options={payment} required />
+        <Select name="can_call" label="Can we call you?" options={yesNo} required />
+      </div>
+
+      <p class="lead__status" role="status" aria-live="polite"></p>
+
+      <button type="submit" class="btn btn--lg lead__submit">
+        <span class="lead__spinner" aria-hidden="true"></span>
+        <span class="lead__submit-text">Submit my interest</span>
+      </button>
+      <p class="lead__fine">We'll only use your details to contact you about Capital Heights.</p>
+    </form>
+
+    <div class="lead__done" hidden>
+      <span class="lead__done-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="m6 14.5 5.5 5.5L22 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+          ></path>
+        </svg>
+      </span>
+      <h2 class="lead__title">Thank you!</h2>
+      <p class="lead__sub">We've received your details. A Capital Heights advisor will be in touch shortly.</p>
+      <button type="button" class="btn btn--lg" data-close>Back to the page</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById('lead-dialog') as HTMLDialogElement;
+  const form = dialog.querySelector('form')!;
+  const done = dialog.querySelector<HTMLElement>('.lead__done')!;
+  const status = dialog.querySelector<HTMLElement>('.lead__status')!;
+  const submit = dialog.querySelector<HTMLButtonElement>('.lead__submit')!;
+  const ctaInput = form.querySelector<HTMLInputElement>('input[name="cta"]')!;
+  const fallbackEmail = dialog.dataset.email!;
+
+  const labels: Record<string, string> = {
+    name: 'Name',
+    phone: 'Phone',
+    email: 'Email',
+    reason: 'Why are you buying',
+    has_7m: 'Has ₦7M before 20 Nov 2026',
+    timing: 'How soon to commit',
+    payment: 'Payment format',
+    can_call: 'Can we call',
+    cta: 'Clicked',
+  };
+
+  function openForm(cta: string) {
+    ctaInput.value = cta;
+    form.hidden = false;
+    done.hidden = true;
+    status.textContent = '';
+    dialog.showModal();
+    document.documentElement.classList.add('lead-open');
+    form.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+  }
+
+  dialog.addEventListener('close', () => document.documentElement.classList.remove('lead-open'));
+
+  // Every CTA marked with data-lead opens the form instead of navigating.
+  document.addEventListener('click', (e) => {
+    const cta = (e.target as Element).closest<HTMLElement>('[data-lead]');
+    if (!cta) return;
+    e.preventDefault();
+    // innerText skips hidden spans (e.g. the header's short mobile label).
+    openForm(cta.innerText.replace(/\s+/g, ' ').trim());
+  });
+
+  dialog.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
+  // Click on the backdrop (outside the panel) closes.
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+
+  // Text field validation: show messages after the user leaves a field or submits.
+  const textFields = [...form.querySelectorAll<HTMLInputElement>('.field__input')];
+  const showFieldError = (input: HTMLInputElement) => {
+    const err = input.parentElement!.querySelector<HTMLElement>('.field__error')!;
+    const bad = !input.validity.valid;
+    err.hidden = !bad;
+    input.toggleAttribute('aria-invalid', bad);
+  };
+  textFields.forEach((input) => {
+    input.addEventListener('blur', () => input.value && showFieldError(input));
+    input.addEventListener('input', () => input.hasAttribute('aria-invalid') && showFieldError(input));
+  });
+
+  /**
+   * Validate before the submit event exists. capture.js sends whatever reaches
+   * "submit", so an invalid form must never get that far. Pressing Enter in a
+   * field also routes through a click on this button (implicit submission).
+   */
+  submit.addEventListener('click', (e) => {
+    textFields.forEach(showFieldError);
+    // checkValidity fires "invalid" on the custom selects' hidden inputs too.
+    if (form.checkValidity()) return;
+    e.preventDefault();
+    const firstBad = form.querySelector<HTMLElement>('[aria-invalid], .is-invalid .select__trigger');
+    firstBad?.focus();
+    status.textContent = 'Please complete the highlighted fields.';
+  });
+
+  const submitText = dialog.querySelector<HTMLElement>('.lead__submit-text')!;
+  const CRM_HOST = 'crm-vertical-saas.onrender.com';
+
+  /**
+   * capture.js doesn't expose its request, so we wrap fetch() and keep a
+   * handle on the CRM call. capture.js looks up fetch when the form is
+   * submitted, so wrapping it here (before any submit) is enough.
+   */
+  let crmRequest: Promise<unknown> | null = null;
+  const nativeFetch = window.fetch.bind(window);
+  window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+    const p = nativeFetch(input, init);
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    if (url.includes(CRM_HOST)) crmRequest = p.catch(() => undefined);
+    return p;
+  };
+
+  /** Resolves when the CRM request settles (success or failure), or after `timeout` ms. */
+  function crmRequestFinished(timeout = 8000) {
+    const timer = new Promise((r) => setTimeout(r, timeout));
+    return Promise.race([crmRequest ?? Promise.resolve(), timer]);
+  }
+
+  function setSending(on: boolean) {
+    submit.disabled = on;
+    submit.classList.toggle('is-sending', on);
+    submit.setAttribute('aria-busy', String(on));
+    submitText.textContent = on ? 'Sending…' : 'Submit my interest';
+  }
+
+  // Runs after capture.js (it listens in the capture phase and posts the lead).
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) return; // safety net; normally stopped above
+    status.textContent = '';
+    setSending(true);
+
+    if (!(window as any).__crmCaptureFailed) {
+      // capture.js (capture phase) has already started its request by now.
+      // Wait for it, but show the spinner at least briefly.
+      await Promise.all([crmRequestFinished(), new Promise((r) => setTimeout(r, 600))]);
+      crmRequest = null;
+    }
+
+    setSending(false);
+
+    if ((window as any).__crmCaptureFailed) {
+      // CRM script was blocked or failed to load: hand off to email, pre-filled.
+      const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      const body = Object.entries(data)
+        .map(([k, v]) => `${labels[k] ?? k}: ${v}`)
+        .join('\n');
+      const subject = `Capital Heights enquiry from ${data.name}`;
+      window.location.href = `mailto:${fallbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    form.reset();
+    form.hidden = true;
+    done.hidden = false;
+    done.querySelector<HTMLButtonElement>('[data-close]')?.focus();
+  });
+</script>
+
+<style>
+  :global(html.lead-open) { overflow: hidden; }
+
+  .lead {
+    width: min(640px, calc(100% - 32px));
+    max-height: calc(100dvh - 48px);
+    padding: 0;
+    border: 1px solid #2e353d;
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+  }
+  .lead[open] {
+    display: flex;
+    animation: lead-in 0.22s ease-out;
+  }
+  .lead::backdrop {
+    background: rgba(4, 8, 12, 0.78);
+    backdrop-filter: blur(4px);
+  }
+  @keyframes lead-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .lead__panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+  }
+  .lead__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid #242b32;
+  }
+  .lead__title {
+    margin-top: 6px;
+    font: 600 28px/34px var(--serif);
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .lead__sub {
+    margin-top: 8px;
+    font: 400 14px/22px var(--sans);
+    color: var(--muted);
+  }
+  .lead__close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--surface-3);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .lead__close:hover { color: var(--gold); }
+  .lead__close:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .lead__form {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 24px 32px 28px;
+    overscroll-behavior: contain;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 16px;
+  }
+  .field--full { grid-column: 1 / -1; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .field__label {
+    font: 600 12px/16px var(--sans);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .req { color: var(--gold); }
+  .field__input {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: 1px solid #2e353d;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 15px/22px var(--sans);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field__input::placeholder { color: #7d8794; }
+  .field__input:hover { border-color: #504535; }
+  .field__input:focus {
+    outline: none;
+    border-color: var(--gold-btn);
+    box-shadow: 0 0 0 3px rgba(229, 169, 60, 0.18);
+  }
+  .field__input[aria-invalid] { border-color: #e5484d; }
+  .field__error {
+    font: 500 12px/16px var(--sans);
+    color: #ff8a8d;
+  }
+
+  .lead__status {
+    min-height: 20px;
+    margin-top: 16px;
+    font: 500 13px/20px var(--sans);
+    color: #ff8a8d;
+  }
+  .lead__submit {
+    width: 100%;
+    margin-top: 8px;
+    padding: 16px 24px;
+    border: 0;
+    cursor: pointer;
+    box-shadow: 0 0 30px -5px rgba(229, 169, 60, 0.4);
+  }
+  .lead__submit {
+    gap: 10px;
+  }
+  .lead__submit:disabled { cursor: progress; transform: none; filter: none; }
+  .lead__submit.is-sending { opacity: 0.85; }
+  .lead__spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(94, 64, 0, 0.3);
+    border-top-color: var(--gold-ink);
+    border-radius: 50%;
+    animation: lead-spin 0.7s linear infinite;
+  }
+  .is-sending .lead__spinner { display: inline-block; }
+  @keyframes lead-spin {
+    to { transform: rotate(360deg); }
+  }
+  .lead__fine {
+    margin-top: 12px;
+    font: 400 12px/18px var(--sans);
+    color: #7d8794;
+    text-align: center;
+  }
+
+  .lead__done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 48px 32px;
+    text-align: center;
+  }
+  .lead__done[hidden] { display: none; }
+  .lead__done-icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+  .lead__done .btn { margin-top: 24px; border: 0; cursor: pointer; }
+
+  @media (max-width: 640px) {
+    .lead {
+      width: 100%;
+      max-width: 100%;
+      max-height: 100dvh;
+      height: 100dvh;
+      margin: 0;
+      border-radius: 0;
+      border: 0;
+    }
+    .lead__head { padding: 20px 20px 16px; }
+    .lead__title { font-size: 22px; line-height: 28px; }
+    .lead__form { padding: 20px 20px 24px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lead[open] { animation: none; }
+  }
+</style>
