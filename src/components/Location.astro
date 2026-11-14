@@ -1,5 +1,5 @@
 ---
-// Figma node 52:360 (rebuilt from node metadata + render — Figma rate limit hit)
+// Figma node 52:360 (rebuilt from node metadata; assets exported via Figma API)
 const mapQuery = encodeURIComponent('Shoprite Sangotedo, Lekki-Epe Expressway, Lagos');
 ---
 
@@ -21,14 +21,7 @@ const mapQuery = encodeURIComponent('Shoprite Sangotedo, Lekki-Epe Expressway, L
         </p>
 
         <div class="pin">
-          <svg width="16" height="20" viewBox="0 0 16 20" fill="none" aria-hidden="true">
-            <path
-              d="M8 19s6.5-6.1 6.5-11A6.5 6.5 0 0 0 1.5 8c0 4.9 6.5 11 6.5 11Z"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linejoin="round"></path>
-            <circle cx="8" cy="8" r="2.4" stroke="currentColor" stroke-width="1.8"></circle>
-          </svg>
+          <img src="/icons/pin.svg" width="16" height="20" alt="" />
           <p>Location: Beside Shoprite Sangotedo, Lekki.</p>
         </div>
 
@@ -45,7 +38,6 @@ const mapQuery = encodeURIComponent('Shoprite Sangotedo, Lekki-Epe Expressway, L
 
       <div class="showcase">
         <figure class="render">
-          <!-- TODO: replace with the entrance render from Figma node 52:395 -->
           <img
             src="/images/location-entrance.jpg"
             width="512"
@@ -110,7 +102,7 @@ const mapQuery = encodeURIComponent('Shoprite Sangotedo, Lekki-Epe Expressway, L
     box-shadow: var(--shadow-card);
     color: var(--gold);
   }
-  .pin svg { flex: none; }
+  .pin img { flex: none; }
   .pin p {
     font: 700 22px/30px var(--serif);
     text-transform: uppercase;

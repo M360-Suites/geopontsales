@@ -1,11 +1,26 @@
 ---
 // Figma node 53:1152
+const message = 'What if ₦7 million could get you closer to your dream home in Lekki?';
+const copies = 5; // enough to overfill very wide screens
 ---
 
 <header class="header">
   <div class="announce">
-    <img src="/icons/announce.svg" width="13.333" height="10.667" alt="" />
-    <p>What if ₦7 million could get you closer to your dream home in Lekki?</p>
+    <img class="announce__icon" src="/icons/announce.svg" width="13.333" height="10.667" alt="" />
+    <div class="marquee">
+      <p class="sr-only">{message}</p>
+      <div class="marquee__track" aria-hidden="true">
+        {
+          [0, 1].map(() => (
+            <div class="marquee__group">
+              {Array.from({ length: copies }, () => (
+                <span class="marquee__item">{message}</span>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
   </div>
   <div class="bar">
     <a class="brand" href="#top" aria-label="Capital Heights by Geoponts Properties — home">
@@ -37,27 +52,62 @@
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 50;
-    background: rgba(8, 15, 22, 0.8);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background: #080f16;
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
   }
   .announce {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
+    gap: 8px;
     padding: 4px 40px 5px;
-    background: rgba(36, 43, 50, 0.9);
-    border-bottom: 1px solid rgba(46, 53, 61, 0.4);
+    background: #242b32;
+    border-bottom: 1px solid #282f36;
   }
-  .announce img { flex: none; }
-  .announce p {
+  .announce__icon { flex: none; }
+
+  /* Marquee: two identical groups slide left by one group width, then loop seamlessly */
+  .marquee {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 60s linear infinite;
+  }
+  .marquee:hover .marquee__track { animation-play-state: paused; }
+  .marquee__group { display: flex; flex: none; }
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
     font: 700 10px/14px var(--sans);
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--gold);
-    text-align: center;
+    white-space: nowrap;
+  }
+  .marquee__item::after {
+    content: '•';
+    margin-inline: 24px;
+    color: var(--gold-btn);
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track { animation: none; }
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
   .bar {
     height: 80px;
@@ -84,7 +134,7 @@
     width: 1px;
     height: 32px;
     margin-inline: 8px;
-    background: rgba(229, 169, 60, 0.4);
+    background: #614d25;
     flex: none;
   }
   .brand__name {
@@ -121,7 +171,7 @@
   }
   @media (max-width: 640px) {
     .announce { padding-inline: 16px; }
-    .announce p { font-size: 9px; letter-spacing: 0.6px; }
+    .marquee__item { font-size: 9px; letter-spacing: 0.6px; }
     .bar { height: 64px; }
     .brand__logo { height: 38px; }
     .brand__rule { height: 24px; margin-inline: 2px; }
