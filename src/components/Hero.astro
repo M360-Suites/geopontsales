@@ -1,0 +1,272 @@
+---
+// Figma node 52:6
+const panels = [
+  {
+    n: '01',
+    label: 'The capital barrier',
+    text: 'Have you ever found your dream apartment, only to realise the money required to own it is way beyond your reach?',
+  },
+  {
+    n: '02',
+    label: 'The inflation trap',
+    text: "Are you tired of watching property prices increase while you keep telling yourself you'll buy when you have enough money?",
+  },
+  {
+    n: '03',
+    label: 'The upfront myth',
+    text: 'And what if the opportunity to own a beautiful apartment in Lekki was right in front of you, but you thought you needed tens of millions upfront to get started?',
+  },
+];
+---
+
+<section class="hero" id="top">
+  <img class="hero__bg" src="/images/hero-bg.jpg" alt="" aria-hidden="true" fetchpriority="high" />
+  <div class="hero__veil" aria-hidden="true"></div>
+  <div class="hero__glow" aria-hidden="true"></div>
+
+  <div class="hero__inner">
+    <div class="hero__spacer" aria-hidden="true"></div>
+
+    <h1 class="hero__title">
+      How long will you keep<br class="lg-br" /> paying rent for a home <em>you<br class="lg-br" /> don't own?</em>
+    </h1>
+
+    <ul class="panels">
+      {
+        panels.map((p) => (
+          <li class="panel">
+            <div class="panel__head">
+              <span class="panel__num">{p.n}</span>
+              <span class="panel__label">{p.label}</span>
+            </div>
+            <p class="panel__text">{p.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="pivot">What if we told you there's another way to approach property ownership?</p>
+
+    <div class="hook">
+      <div class="hook__blur hook__blur--tr" aria-hidden="true"></div>
+      <div class="hook__blur hook__blur--bl" aria-hidden="true"></div>
+      <h2 class="hook__title">
+        What if you could take the first step towards owning a waterfront apartment in Sangotedo with just ₦7 million?
+      </h2>
+      <p class="hook__body">
+        Yes, you read that right. Introducing <strong>CAPITAL HEIGHTS</strong>. A premium waterfront residential
+        development offering 1 and 2-bedroom apartments in Sangotedo, Lekki.
+      </p>
+      <div class="deposit">
+        <p>Just ₦7 million initial deposit.</p>
+      </div>
+      <div class="hook__cta">
+        <a class="btn btn--lg" href="#offer">Yes! Show me this opportunity</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-deep);
+  }
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, #0d141b 0%, rgba(13, 20, 27, 0.85) 50%, rgba(8, 15, 22, 0.8) 100%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  .hero__glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(905px 2232px at 50% 0, rgba(255, 198, 101, 0.1) 0%, rgba(255, 198, 101, 0) 50%);
+  }
+  .hero__inner {
+    position: relative;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 144px var(--gutter) 136px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero__spacer { height: 62px; }
+
+  .hero__title {
+    max-width: 896px;
+    padding: 0 34px 40px;
+    font: 600 56px/64px var(--serif);
+    letter-spacing: -1.12px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--text);
+  }
+  .hero__title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .panels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 1024px;
+    margin-bottom: 64px;
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0;
+    padding: 24px;
+    border-radius: 8px;
+    background: rgba(21, 28, 36, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-card);
+  }
+  .panel__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+  .panel__num {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 3.5px 0 4.5px;
+    border-radius: 12px;
+    background: rgba(147, 0, 10, 0.6);
+    font: 700 16px/24px var(--sans);
+    color: var(--gold);
+  }
+  .panel__label {
+    font: 700 10px/14px var(--sans);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .panel__text {
+    font: 400 16px/24px var(--sans);
+    color: rgba(220, 227, 237, 0.9);
+  }
+
+  .pivot {
+    max-width: 672px;
+    padding: 0 32px 40px;
+    font: 600 22px/30px var(--serif);
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .hook {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 896px;
+    padding: 68px 64px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-radius: 16px;
+    background: linear-gradient(to bottom, rgba(36, 43, 50, 0.95), rgba(25, 32, 40, 0.9) 50%, rgba(21, 28, 36, 0.95));
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    text-align: center;
+  }
+  .hook__blur {
+    position: absolute;
+    width: 288px;
+    height: 288px;
+    border-radius: 12px;
+    filter: blur(64px);
+    pointer-events: none;
+  }
+  .hook__blur--tr { top: -96px; right: -96px; background: rgba(255, 198, 101, 0.1); }
+  .hook__blur--bl { bottom: -96px; left: -96px; background: rgba(248, 161, 17, 0.1); }
+
+  .hook__title {
+    position: relative;
+    font: 500 40px/48px var(--serif);
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
+    color: var(--gold-pale);
+  }
+  .hook__body {
+    position: relative;
+    max-width: 672px;
+    padding: 8px 0 16px;
+    font: 300 18px/28px var(--sans);
+    color: var(--text);
+  }
+  .hook__body strong {
+    font-weight: 600;
+    letter-spacing: 0.45px;
+    color: var(--gold);
+  }
+  .deposit {
+    position: relative;
+    padding: 20px 40px 16px;
+    border-radius: 8px;
+    background: rgba(13, 20, 27, 0.8);
+    box-shadow: 0 0 35px rgba(229, 169, 60, 0.2);
+  }
+  .deposit p {
+    max-width: 574px;
+    margin: 0 auto;
+    padding-inline: 97px;
+    font: 700 44px/48px var(--sans);
+    letter-spacing: -0.88px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .hook__cta {
+    position: relative;
+    padding-top: 32px;
+  }
+  .hook__cta .btn {
+    padding: 16px 40px;
+    box-shadow: 0 0 30px -5px rgba(229, 169, 60, 0.4);
+  }
+
+  @media (max-width: 1024px) {
+    .lg-br { display: none; }
+    .panel { gap: 16px; }
+    .hero__inner { padding-top: 128px; }
+    .hero__spacer { height: 24px; }
+    .hero__title { font-size: 46px; line-height: 54px; padding-inline: 0; }
+    .panels { grid-template-columns: 1fr; max-width: 640px; }
+    .hook { padding: 56px 40px 48px; }
+    .hook__title { font-size: 34px; line-height: 42px; }
+    .deposit p { padding-inline: 24px; font-size: 38px; line-height: 44px; }
+  }
+  @media (max-width: 640px) {
+    .hero__inner { padding-top: 112px; padding-bottom: 64px; }
+    .hero__spacer { height: 0; }
+    .hero__title { font-size: 32px; line-height: 40px; letter-spacing: -0.6px; padding-bottom: 32px; }
+    .panels { margin-bottom: 48px; }
+    .pivot { font-size: 19px; line-height: 27px; padding-inline: 0; padding-bottom: 32px; }
+    .hook { padding: 40px 20px 36px; }
+    .hook__title { font-size: 24px; line-height: 32px; letter-spacing: -0.3px; }
+    .hook__body { font-size: 16px; line-height: 26px; }
+    .deposit { padding: 16px 16px 12px; width: 100%; }
+    .deposit p { padding-inline: 0; font-size: 26px; line-height: 32px; letter-spacing: -0.4px; }
+    .hook__cta { padding-top: 24px; width: 100%; }
+    .hook__cta .btn { width: 100%; padding-inline: 20px; }
+  }
+</style>

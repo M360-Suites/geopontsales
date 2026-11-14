@@ -1,0 +1,256 @@
+---
+// Figma node 52:150 (rebuilt from node metadata + render — Figma rate limit hit)
+const specs = [
+  { icon: 'building', text: '1-bedroom waterfront apartments.' },
+  { icon: 'home', text: '2-bedroom waterfront apartments.' },
+  { icon: 'nav', text: 'Prime Sangotedo location.' },
+  { icon: 'shield', text: 'Certificate of Occupancy (C of O).', strong: true },
+  { icon: 'calendar', text: 'Expected delivery: December 2027.' },
+];
+---
+
+<section class="intro" id="intro">
+  <div class="container">
+    <header class="intro__head">
+      <p class="eyebrow">Introducing Capital Heights</p>
+      <h2 class="h2">What if your next home was closer than you thought?</h2>
+      <p class="intro__lede">
+        Welcome to <span class="gold">CAPITAL HEIGHTS</span>. A waterfront residential development designed around an
+        opportunity to own a 1 or 2-bedroom apartment in one of the Lekki-Epe corridor's established residential and
+        commercial areas.
+      </p>
+    </header>
+
+    <div class="mosaic">
+      <figure class="shot">
+        <img
+          src="/images/waterfront-dusk.jpg"
+          width="512"
+          height="225"
+          loading="lazy"
+          alt="Waterfront architectural façade with dusk lighting and lush landscaping"
+        />
+      </figure>
+      <figure class="shot">
+        <img
+          src="/images/warm-illuminated.jpg"
+          width="512"
+          height="225"
+          loading="lazy"
+          alt="Private vehicular courtyard, security gates, and exterior grounds"
+        />
+      </figure>
+    </div>
+
+    <div class="specs">
+      <div class="specs__main">
+        <p class="specs__text">
+          Located off the Lekki-Epe Expressway, beside Shoprite Sangotedo, Capital Heights brings together an attractive
+          location, waterfront living and an accessible initial payment.
+        </p>
+        <div class="key">
+          <span class="key__icon" aria-hidden="true">
+            <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
+              <circle cx="5" cy="5" r="3.6" stroke="currentColor" stroke-width="1.8"></circle>
+              <path d="M8.6 5H19M15.5 5v3M18.2 5v2.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              ></path>
+            </svg>
+          </span>
+          <div>
+            <p class="key__kicker">And the most interesting part?</p>
+            <p class="key__title">You can get started with just ₦7 million.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card">
+        <p class="card__title">Here’s what awaits you</p>
+        <ul class="card__list">
+          {
+            specs.map((s) => (
+              <li class:list={[{ strong: s.strong }]}>
+                <svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  {s.icon === 'building' && (
+                    <path fill="currentColor" d="M3 21V3h12v4h6v14H3Zm2-2h2v-2H5v2Zm0-4h2v-2H5v2Zm0-4h2V9H5v2Zm0-4h2V5H5v2Zm4 12h2v-2H9v2Zm0-4h2v-2H9v2Zm0-4h2V9H9v2Zm0-4h2V5H9v2Zm4 12h6V9h-6v2h2v2h-2v2h2v2h-2v2Z" />
+                  )}
+                  {s.icon === 'home' && (
+                    <path fill="currentColor" d="M2 20v-9l5-4 5 4v9H9v-5H5v5H2Zm12 0V10.3L9.6 6.8 13 4l9 7v9h-8Zm3-6h2v-2h-2v2Z" />
+                  )}
+                  {s.icon === 'nav' && (
+                    <path stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M21 3 3 10.5l7.5 3 3 7.5L21 3Z" />
+                  )}
+                  {s.icon === 'shield' && (
+                    <>
+                      <path stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2.5 4.5 5.5v6c0 4.6 3.1 8.5 7.5 10 4.4-1.5 7.5-5.4 7.5-10v-6L12 2.5Z" />
+                      <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m8.5 12 2.5 2.5 4.5-5" />
+                    </>
+                  )}
+                  {s.icon === 'calendar' && (
+                    <>
+                      <rect x="3.5" y="5" width="17" height="15.5" rx="2" stroke="currentColor" stroke-width="2" />
+                      <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3.5 10h17M8 3v4M16 3v4" />
+                    </>
+                  )}
+                </svg>
+                <span>{s.text}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn btn--light card__btn" href="#offer">Discover Capital Heights</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro {
+    background: var(--bg-deep);
+    padding: 96px 0;
+  }
+  .intro__head {
+    max-width: 768px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+  .intro__lede {
+    padding-top: 12px;
+    max-width: 757px;
+    font: 400 18px/29.25px var(--sans);
+    color: var(--muted);
+  }
+
+  .mosaic {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 64px;
+  }
+  .shot {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 2.27 / 1;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-img);
+  }
+  .shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .shot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(8, 15, 22, 0.6) 0%, rgba(8, 15, 22, 0) 45%);
+  }
+
+  .specs {
+    position: relative;
+    margin-top: 64px;
+    min-height: 452px;
+    padding: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+  .specs__main {
+    flex: 0 1 574px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .specs__text { font: 400 16px/26px var(--sans); color: var(--text); }
+
+  .key {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 110px;
+    padding: 16px;
+    border-radius: 8px;
+    background: rgba(13, 20, 27, 0.6);
+  }
+  .key__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--gold-btn);
+    color: var(--gold-ink);
+  }
+  .key__kicker {
+    font: 700 8px/14px var(--sans);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .key__title {
+    max-width: 402px;
+    font: 700 22px/30px var(--serif);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .card {
+    flex: 0 0 341px;
+    padding: 24px;
+    border-radius: 8px;
+    background: var(--surface-3);
+  }
+  .card__title {
+    padding-bottom: 4px;
+    font: 700 12px/16px var(--sans);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .card__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .card__list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    font: 400 14px/24px var(--sans);
+    color: var(--text);
+  }
+  .card__list li.strong { font-weight: 600; }
+  .ico { flex: none; color: var(--gold); }
+  .card__btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 8px 16px;
+  }
+
+  @media (max-width: 1024px) {
+    .specs { flex-direction: column; align-items: stretch; padding: 40px; min-height: 0; }
+    .specs__main { flex-basis: auto; }
+    .card { flex-basis: auto; }
+  }
+  @media (max-width: 640px) {
+    .intro { padding: 64px 0; }
+    .mosaic { grid-template-columns: 1fr; gap: 16px; margin-top: 40px; }
+    .specs { margin-top: 40px; padding: 24px 20px; gap: 24px; }
+    .key { align-items: flex-start; padding: 16px; min-height: 0; }
+    .intro__lede { font-size: 16px; line-height: 26px; }
+    .key__title { font-size: 19px; line-height: 26px; }
+    .card { padding: 20px; }
+  }
+</style>

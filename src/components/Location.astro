@@ -1,0 +1,207 @@
+---
+// Figma node 52:360 (rebuilt from node metadata + render — Figma rate limit hit)
+const mapQuery = encodeURIComponent('Shoprite Sangotedo, Lekki-Epe Expressway, Lagos');
+---
+
+<section class="loc" id="location">
+  <div class="container">
+    <p class="eyebrow">The location</p>
+    <h2 class="h2 loc__title">A good property starts with a good address.</h2>
+
+    <div class="grid">
+      <div class="narrative">
+        <p class="lead">Capital Heights is located off the Lekki-Epe Expressway, beside Shoprite Sangotedo.</p>
+        <p class="body">
+          This puts the development within the Sangotedo axis, with access to nearby shopping, commercial and lifestyle
+          destinations.
+        </p>
+        <p class="body">
+          You're not just exploring an apartment. You're considering ownership in a location connected to the wider
+          Lekki corridor.
+        </p>
+
+        <div class="pin">
+          <svg width="16" height="20" viewBox="0 0 16 20" fill="none" aria-hidden="true">
+            <path
+              d="M8 19s6.5-6.1 6.5-11A6.5 6.5 0 0 0 1.5 8c0 4.9 6.5 11 6.5 11Z"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linejoin="round"></path>
+            <circle cx="8" cy="8" r="2.4" stroke="currentColor" stroke-width="1.8"></circle>
+          </svg>
+          <p>Location: Beside Shoprite Sangotedo, Lekki.</p>
+        </div>
+
+        <div class="actions">
+          <a
+            class="btn btn--ghost"
+            href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+            target="_blank"
+            rel="noopener">View the location</a
+          >
+          <a class="btn" href="#contact">Enquire about apartments in Sangotedo</a>
+        </div>
+      </div>
+
+      <div class="showcase">
+        <figure class="render">
+          <!-- TODO: replace with the entrance render from Figma node 52:395 -->
+          <img
+            src="/images/location-entrance.jpg"
+            width="512"
+            height="225"
+            loading="lazy"
+            alt="Capital Heights entrance perimeter and access roadway beside Shoprite Sangotedo"
+          />
+          <figcaption>
+            <span class="eyebrow">Gated access roadway</span>
+            <span class="axis">Lekki-Epe Axis</span>
+          </figcaption>
+        </figure>
+
+        <div class="map">
+          <iframe
+            title="Map: Capital Heights beside Shoprite Sangotedo"
+            src={`https://maps.google.com/maps?q=${mapQuery}&z=13&output=embed`}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="map__bar">
+            <span>Sangotedo Waterfront Precinct • Lekki Peninsula Scheme II</span>
+            <span class="map__badge">C of O verified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .loc {
+    background: var(--bg);
+    padding: 96px 0;
+  }
+  .loc__title { max-width: 672px; margin-top: 8px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px;
+    align-items: center;
+    margin-top: 8px;
+    min-height: 595px;
+  }
+  .narrative {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .lead { font: 400 18px/29.25px var(--sans); color: var(--text); }
+  .body { font: 400 15px/26px var(--sans); color: var(--muted); }
+
+  .pin {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    min-height: 126px;
+    padding: 24px;
+    border-radius: 8px;
+    background: var(--surface-3);
+    box-shadow: var(--shadow-card);
+    color: var(--gold);
+  }
+  .pin svg { flex: none; }
+  .pin p {
+    font: 700 22px/30px var(--serif);
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 16px;
+  }
+  .actions .btn { min-height: 48px; }
+  .btn--ghost { background: var(--surface); }
+
+  .showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .render {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-img);
+  }
+  .render img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2.27 / 1;
+    object-fit: cover;
+  }
+  .render figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px;
+  }
+  .axis {
+    font: 700 10px/14px var(--sans);
+    letter-spacing: 0.5px;
+    color: var(--muted);
+  }
+
+  .map {
+    position: relative;
+    height: 224px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-img);
+  }
+  .map iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    filter: saturate(0.85);
+  }
+  .map__bar {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(to top, rgba(8, 15, 22, 0.85), rgba(8, 15, 22, 0));
+    font: 700 10px/14px var(--sans);
+    color: var(--text);
+    pointer-events: none;
+  }
+  .map__badge {
+    flex: none;
+    padding: 2px 6px;
+    border-radius: 2px;
+    background: var(--gold);
+    color: var(--gold-ink);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 1024px) {
+    .grid { grid-template-columns: 1fr; min-height: 0; margin-top: 32px; }
+  }
+  @media (max-width: 640px) {
+    .loc { padding: 64px 0; }
+    .lead { font-size: 16px; line-height: 26px; }
+    .pin { min-height: 0; padding: 20px; }
+    .pin p { font-size: 18px; line-height: 26px; }
+    .actions .btn { flex: 1 1 100%; }
+    .map__bar { flex-direction: column; align-items: flex-start; }
+  }
+</style>

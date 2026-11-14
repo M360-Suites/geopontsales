@@ -1,0 +1,253 @@
+---
+// Figma node 52:76
+---
+
+<section class="story" id="story">
+    <div class="container">
+        <h2 class="h2 story__title">
+            The story of many aspiring property owners...
+        </h2>
+
+        <div class="split">
+            <article class="narrative">
+                <p class="lead">
+                    Meet someone who has always wanted to own a property in
+                    Lekki.
+                </p>
+                <p class="body">
+                    They have a good job, they're building their finances and
+                    they're doing their best to secure their future. Every now
+                    and then, they check property listings. They see beautiful
+                    apartments. They imagine what life would look like in their
+                    own home.
+                </p>
+                <p class="reality">
+                    But every time they check the price, reality hits.
+                </p>
+
+                <ul class="prices" aria-label="Rising property prices">
+                    <li>₦50 million</li>
+                    <li class="p2">₦70 million</li>
+                    <li class="p3">₦100M+</li>
+                </ul>
+
+                <blockquote class="quotes">
+                    <p>“Maybe next year.”</p>
+                    <p>“Let me save a little more.”</p>
+                    <p>“I'll buy when I have enough.”</p>
+                </blockquote>
+
+                <div class="truth">
+                    <p class="truth__kicker">But here’s the problem</p>
+                    <h3 class="truth__title">
+                        The perfect financial moment may never come.
+                    </h3>
+                    <p class="truth__body">
+                        And while you're waiting to accumulate the entire
+                        purchase price, opportunities to enter the property
+                        market may change.
+                    </p>
+                </div>
+
+                <p class="pivot">
+                    But what if you could start differently? What if you didn't
+                    have to put together the entire purchase price before taking
+                    your first step? That's where Capital Heights comes in.
+                </p>
+
+                <a class="btn" href="#intro">
+                    Discover a different way to start owning property
+                </a>
+            </article>
+
+            <div class="photo">
+                <img
+                    src="/images/evening_dusk.jpg"
+                    width="512"
+                    height="225"
+                    loading="lazy"
+                    alt="Capital Heights evening dusk view with illuminated balconies"
+                />
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .story {
+        background: var(--bg);
+        padding: 96px 0;
+    }
+    .story__title {
+        max-width: 768px;
+        margin-bottom: 8px;
+    }
+
+    .split {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 40px;
+        padding-top: 56px;
+    }
+    .narrative {
+        grid-column: 1 / span 7;
+        align-self: start;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 40px;
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: var(--shadow-card);
+    }
+    .lead {
+        font: 400 18px/29.25px var(--sans);
+        color: var(--text);
+    }
+    .body {
+        font: 400 16px/26px var(--sans);
+        color: var(--muted);
+    }
+    .reality {
+        font: italic 600 22px/30px var(--serif);
+        color: var(--text);
+    }
+
+    .prices {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+    }
+    .prices li {
+        padding: 16px 16px 18px;
+        border-radius: 4px;
+        background: var(--bg-deep);
+        font: 700 22px/30px var(--sans);
+        text-align: center;
+        color: var(--text);
+        white-space: nowrap;
+    }
+    .prices .p2 {
+        color: var(--peach);
+    }
+    .prices .p3 {
+        color: var(--gold);
+    }
+
+    .quotes {
+        margin: 0;
+        width: 100%;
+        padding: 8px 0 0 18px;
+        border-left: 2px solid var(--rule);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font: italic 400 16px/24px var(--sans);
+        color: var(--muted);
+    }
+
+    .truth {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 32px 24px 24px;
+        border-radius: 8px;
+        background: var(--surface-4);
+    }
+    .truth__kicker {
+        font: 600 12px/16px var(--sans);
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--gold);
+    }
+    .truth__title {
+        font: 700 22px/30px var(--serif);
+        text-transform: uppercase;
+        color: var(--text);
+    }
+    .truth__body {
+        font: 400 16px/24px var(--sans);
+        color: var(--muted);
+    }
+
+    .pivot {
+        padding-top: 8px;
+        font: 500 18px/28px var(--sans);
+        color: var(--gold);
+    }
+    .narrative .btn {
+        box-shadow:
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    .photo {
+        grid-column: 8 / span 5;
+        align-self: center;
+        height: 575px;
+        overflow: hidden;
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: var(--shadow-img);
+    }
+    .photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media (max-width: 1024px) {
+        .split {
+            grid-template-columns: 1fr;
+            gap: 32px;
+            padding-top: 40px;
+        }
+        .narrative,
+        .photo {
+            grid-column: 1;
+        }
+        .photo {
+            height: auto;
+            aspect-ratio: 16 / 9;
+            order: -1;
+        }
+    }
+    @media (max-width: 640px) {
+        .story {
+            padding: 64px 0;
+        }
+        .narrative {
+            padding: 24px 20px;
+        }
+        .lead {
+            font-size: 17px;
+            line-height: 27px;
+        }
+        .reality {
+            font-size: 20px;
+            line-height: 28px;
+        }
+        .prices li {
+            padding: 12px 6px 14px;
+            font-size: 16px;
+            line-height: 22px;
+        }
+        .truth {
+            padding: 24px 20px 20px;
+        }
+        .truth__title {
+            font-size: 19px;
+            line-height: 26px;
+        }
+        .pivot {
+            font-size: 16px;
+            line-height: 26px;
+        }
+        .narrative .btn {
+            width: 100%;
+        }
+    }
+</style>

@@ -1,0 +1,208 @@
+---
+// Figma node 52:301
+const perks = [
+  { icon: '/icons/relax.svg', w: 175.778, h: 16.667, text: 'A space to relax after a long day.' },
+  { icon: '/icons/memories.svg', w: 175.778, h: 15.833, text: 'A place to create beautiful memories.' },
+  { icon: '/icons/privacy.svg', w: 175.778, h: 12.5, text: 'Enjoy privacy and entertain guests.' },
+];
+const tiles = [
+  {
+    img: '/images/waterfront-dusk.jpg',
+    alt: 'Waterfront dusk ambiance showcasing gentle Atlantic breezes and calm reflections',
+    label: 'Atlantic serenity',
+    text: 'Panoramic waterfront breeze and coastal quietude.',
+  },
+  {
+    img: '/images/evening-dusk.jpg',
+    alt: 'Balcony architectural perspective overlooking private Sangotedo grounds',
+    label: 'Outdoor balcony living',
+    text: 'Spacious private balconies built for hosting and rejuvenation.',
+  },
+  {
+    img: '/images/warm-illuminated.jpg',
+    alt: 'Warm illuminated residences reflecting sunset over Lekki Peninsula',
+    label: 'Evening illumination',
+    text: 'Curated warm architectural lighting throughout grounds.',
+  },
+];
+---
+
+<section class="life" id="lifestyle">
+  <div class="container">
+    <div class="split">
+      <div class="copy">
+        <p class="eyebrow">The lifestyle</p>
+        <h2 class="h2">Imagine the feeling of finally having a place to call your own.</h2>
+        <p class="lede">
+          Think beyond the walls and the bedrooms. Think about having a home that reflects the lifestyle you're working
+          towards.
+        </p>
+        <ul class="perks">
+          {
+            perks.map((p) => (
+              <li>
+                <span class="perk__icon">
+                  <img src={p.icon} width={p.w} height={p.h} alt="" />
+                </span>
+                <p>{p.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <aside class="panel">
+        <p class="panel__text">
+          And with its waterfront positioning, Capital Heights offers an opportunity to enjoy a distinctive residential
+          setting.
+        </p>
+        <p class="panel__quote">Your home should be something you look forward to coming back to.</p>
+        <a class="btn btn--light panel__btn" href="#offer">Explore the apartments</a>
+      </aside>
+    </div>
+
+    <ul class="tiles">
+      {
+        tiles.map((t) => (
+          <li class="tile">
+            <img src={t.img} width="512" height="225" loading="lazy" alt={t.alt} />
+            <div class="tile__cap">
+              <p class="tile__label">{t.label}</p>
+              <p class="tile__text">{t.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="cta-row">
+      <a class="btn cta" href="#contact">Yes! I'm interested in this</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .life {
+    background: var(--bg-deep);
+    padding: 96px 0;
+  }
+  .split {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 40px;
+    align-items: center;
+  }
+  .copy {
+    grid-column: 1 / span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .lede { font: 400 18px/29.25px var(--sans); color: var(--muted); }
+
+  .perks {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding-top: 8px;
+  }
+  .perks li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--surface-2);
+  }
+  .perk__icon {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .perk__icon img { max-width: none; flex: none; }
+  .perks p { font: 400 14px/20px var(--sans); color: var(--text); }
+
+  .panel {
+    grid-column: 8 / span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 40px;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+  .panel__text { font: 400 16px/26px var(--sans); color: var(--text); }
+  .panel__quote {
+    padding-bottom: 8px;
+    font: 600 22px/30px var(--serif);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .panel__btn { width: 100%; }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 64px;
+  }
+  .tile {
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--surface-2);
+    box-shadow: var(--shadow-img);
+  }
+  .tile img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2.27 / 1;
+    object-fit: cover;
+  }
+  .tile__cap {
+    min-height: 94px;
+    padding: 16px;
+    background: var(--surface);
+  }
+  .tile__label {
+    font: 700 10px/14px var(--sans);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .tile__text {
+    margin-top: 2px;
+    font: 400 14px/20px var(--sans);
+    color: var(--muted);
+  }
+
+  .cta-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 64px;
+  }
+  .cta {
+    padding: 16px 64px;
+    filter: drop-shadow(0 0 12.5px rgba(229, 169, 60, 0.3));
+  }
+
+  @media (max-width: 1024px) {
+    .split { grid-template-columns: 1fr; }
+    .copy,
+    .panel { grid-column: 1; }
+  }
+  @media (max-width: 900px) {
+    .tiles { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+  }
+  @media (max-width: 640px) {
+    .life { padding: 64px 0; }
+    .lede { font-size: 16px; line-height: 26px; }
+    .perks { grid-template-columns: 1fr; gap: 8px; }
+    .perks li { gap: 8px; }
+    .panel { padding: 24px 20px; }
+    .panel__quote { font-size: 19px; line-height: 27px; }
+    .tiles { margin-top: 40px; gap: 16px; }
+    .cta-row { margin-top: 40px; }
+    .cta { width: 100%; padding-inline: 16px; }
+  }
+</style>
